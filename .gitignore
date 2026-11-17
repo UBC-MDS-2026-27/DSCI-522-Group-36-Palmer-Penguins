@@ -1,0 +1,12 @@
+
+# System and Python files
+.DS_Store
+.venv/
+__pycache__/
+
+# Quarto temporary files
+*_files/
+.quarto/
+
+# Ignore raw data (144M exceeds GitHub's 100 MB limit)
+data/raw/creditcard.csv
