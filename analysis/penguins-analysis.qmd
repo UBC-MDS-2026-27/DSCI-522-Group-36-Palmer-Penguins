@@ -1,0 +1,17 @@
+---
+title: "Palmer Penguins Analysis"
+format: html
+jupyter: python3
+---
+
+```{python}
+from pathlib import Path
+import pandas as pd
+
+data_path = Path("data/raw/penguins.csv")
+if not data_path.exists():
+    data_path = Path("../data/raw/penguins.csv")
+
+df = pd.read_csv(data_path)
+df.head()
+```
