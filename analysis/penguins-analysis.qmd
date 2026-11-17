@@ -1,24 +1,16 @@
 ---
-title: "Palmer Penguins Analysis"
-format: html
+title: "Predicting Palmer Penguin Sex from Physical Measurements"
+author: "DSCI 522 Group 36"
+format:
+  html:
+    toc: true
+    embed-resources: true
+  pdf:
+    toc: true
 jupyter: python3
 ---
 
 ```{python}
-from pathlib import Path
-import pandas as pd
-from pathlib import Path
-import pandas as pd
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.preprocessing import StandardScaler
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import make_pipeline
-from sklearn.metrics import classification_report, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
-from os import pipe
-
-
 data_path = Path("data/raw/penguins.csv")
 if not data_path.exists():
     data_path = Path("../data/raw/penguins.csv")
@@ -29,50 +21,44 @@ df.head()
 
 ```{python}
 #Question: Can we predict a penguin’s sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
-df_clean = df.dropna(subset = ["sex"])
-features = ["flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
-target = "sex"
-
-X = df_clean[features]
-y = df_clean[target]
-
-#split data 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 0.25, stratify= y)
-
+import pandas as pd
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import GridSearchCV
-import pandas as pd
+from sklearn.metrics import classification_report
 
-# 1. Pipeline: Impute missing measurements -> Scale features -> k-NN
+df_clean = df.dropna(subset=["sex"])
+features = ["flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
+target = "sex"
+
 pipe = make_pipeline(
     SimpleImputer(strategy="median"),
     StandardScaler(),
     KNeighborsClassifier(),
 )
+param_grid = {"kneighborsclassifier__n_neighbors": range(1, 20, 2)}
 
-# 2. Tune n_neighbors using odd values from 1 to 29
-param_grid = {"kneighborsclassifier__n_neighbors": range(1, 30, 2)}
+results = []
 
-grid_search = GridSearchCV(
-    pipe,
-    param_grid=param_grid,
-    cv=5,
-    scoring="accuracy",
-    return_train_score=True,
-)
-grid_search.fit(X_train, y_train)
+for species in ["Adelie", "Chinstrap", "Gentoo"]:
+    sub = df_clean[df_clean["species"] == species]
+    X_train, X_test, y_train, y_test = train_test_split(
+        sub[features], sub[target], test_size=0.25, stratify=sub[target], random_state=522
+    )
 
-best_k = grid_search.best_params_["kneighborsclassifier__n_neighbors"]
-print(f"Best k: {best_k}")
-print(f"Best 5-Fold CV Accuracy: {grid_search.best_score_:.3f}")
-```
+    grid = GridSearchCV(pipe, param_grid=param_grid, cv=5, scoring="accuracy")
+    grid.fit(X_train, y_train)
 
-```{python}
-# Evaluate on unseen test set 
-# Precision, Recall, and F1-score for 'female' and 'male'
-y_pred = grid_search.predict(X_test)
-print(classification_report(y_test, y_pred))
+    best_k = grid.best_params_["kneighborsclassifier__n_neighbors"]
+    test_acc = grid.score(X_test, y_test)
+    results.append({"Species": species, "Best k": best_k, "CV Accuracy": round(grid.best_score_, 3), "Test Accuracy": round(test_acc, 3)})
+
+    print(f"=== {species} (Best k={best_k}) ===")
+    print(classification_report(y_test, grid.predict(X_test)))
+
+# Summary comparison table across all 3 species
+summary_df = pd.DataFrame(results)
+summary_df
 ```
