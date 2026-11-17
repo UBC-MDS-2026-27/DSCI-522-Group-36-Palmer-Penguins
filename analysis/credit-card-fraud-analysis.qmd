@@ -5,8 +5,8 @@ jupyter: python3
 ---
 
 ```{python}
-import pandas as pd
+#import pandas as pd
 
-df = pd.read_csv("../data/raw/creditcard.csv")
-df.head()
+#df = pd.read_csv("../data/raw/creditcard.csv")
+#df.head()
 ```
