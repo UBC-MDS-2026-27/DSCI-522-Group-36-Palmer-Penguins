@@ -11,24 +11,26 @@ jupyter: python3
 ---
 
 ```{python}
-data_path = Path("data/raw/penguins.csv")
-if not data_path.exists():
-    data_path = Path("../data/raw/penguins.csv")
+from pathlib import Path
+import pandas as pd
 
+root_dir = Path(".") if Path("data").exists() else Path("..")
+data_path = root_dir / "data" / "raw" / "penguins.csv"
 df = pd.read_csv(data_path)
 df.head()
 ```
 
 ```{python}
-#Question: Can we predict a penguin’s sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
+import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics import classification_report
+from sklearn.preprocessing import StandardScaler
 
+#Question: Can we predict a penguin’s sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
 df_clean = df.dropna(subset=["sex"])
 features = ["flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
 target = "sex"
