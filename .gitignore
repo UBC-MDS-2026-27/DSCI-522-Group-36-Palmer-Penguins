@@ -8,5 +8,3 @@ __pycache__/
 *_files/
 .quarto/
 
-# Ignore raw data (144M exceeds GitHub's 100 MB limit)
-data/raw/creditcard.csv
