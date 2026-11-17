@@ -16,6 +16,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
+from os import pipe
 
 
 data_path = Path("data/raw/penguins.csv")
@@ -27,17 +28,51 @@ df.head()
 ```
 
 ```{python}
-from os import pipe
 #Question: Can we predict a penguin’s sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
-
+df_clean = df.dropna(subset = ["sex"])
 features = ["flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
 target = "sex"
 
-X = features 
-y = target
+X = df_clean[features]
+y = df_clean[target]
 
 #split data 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 0.25, stratify= y)
 
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import GridSearchCV
+import pandas as pd
 
+# 1. Pipeline: Impute missing measurements -> Scale features -> k-NN
+pipe = make_pipeline(
+    SimpleImputer(strategy="median"),
+    StandardScaler(),
+    KNeighborsClassifier(),
+)
+
+# 2. Tune n_neighbors using odd values from 1 to 29
+param_grid = {"kneighborsclassifier__n_neighbors": range(1, 30, 2)}
+
+grid_search = GridSearchCV(
+    pipe,
+    param_grid=param_grid,
+    cv=5,
+    scoring="accuracy",
+    return_train_score=True,
+)
+grid_search.fit(X_train, y_train)
+
+best_k = grid_search.best_params_["kneighborsclassifier__n_neighbors"]
+print(f"Best k: {best_k}")
+print(f"Best 5-Fold CV Accuracy: {grid_search.best_score_:.3f}")
+```
+
+```{python}
+# Evaluate on unseen test set 
+# Precision, Recall, and F1-score for 'female' and 'male'
+y_pred = grid_search.predict(X_test)
+print(classification_report(y_test, y_pred))
 ```
