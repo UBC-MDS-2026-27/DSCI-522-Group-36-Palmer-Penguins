@@ -1,4 +1,4 @@
-# DCSI-522 Group 36: Palmer Penguins Analysis
+# DCSI-522-Group-36-Credit-Card-Transactions
 
 ## Environment Setup
 This project uses `uv` for Python dependency management. After cloning the repo, run:
@@ -6,5 +6,8 @@ This project uses `uv` for Python dependency management. After cloning the repo,
 uv sync
 ```
 
-## Dataset
-The raw dataset is located at `data/raw/penguins.csv`.
+## Dataset Setup
+Because `creditcard.csv` exceeds GitHub's 100 MB limit, it is ignored by Git. Download `creditcard.csv` and place it in:
+`data/raw/creditcard.csv`
+EOF
+

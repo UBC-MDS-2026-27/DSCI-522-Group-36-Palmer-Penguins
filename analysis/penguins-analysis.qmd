@@ -1,6 +1,12 @@
 ---
-title: "Palmer Penguins Analysis"
-format: html
+title: "Predicting Palmer Penguin Sex from Physical Measurements"
+author: "DSCI 522 Group 36"
+format:
+  html:
+    toc: true
+    embed-resources: true
+  pdf:
+    toc: true
 jupyter: python3
 ---
 
@@ -8,10 +14,53 @@ jupyter: python3
 from pathlib import Path
 import pandas as pd
 
-data_path = Path("data/raw/penguins.csv")
-if not data_path.exists():
-    data_path = Path("../data/raw/penguins.csv")
-
+root_dir = Path(".") if Path("data").exists() else Path("..")
+data_path = root_dir / "data" / "raw" / "penguins.csv"
 df = pd.read_csv(data_path)
 df.head()
+```
+
+```{python}
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.impute import SimpleImputer
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+#Question: Can we predict a penguin’s sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
+df_clean = df.dropna(subset=["sex"])
+features = ["flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
+target = "sex"
+
+pipe = make_pipeline(
+    SimpleImputer(strategy="median"),
+    StandardScaler(),
+    KNeighborsClassifier(),
+)
+param_grid = {"kneighborsclassifier__n_neighbors": range(1, 20, 2)}
+
+results = []
+
+for species in ["Adelie", "Chinstrap", "Gentoo"]:
+    sub = df_clean[df_clean["species"] == species]
+    X_train, X_test, y_train, y_test = train_test_split(
+        sub[features], sub[target], test_size=0.25, stratify=sub[target], random_state=522
+    )
+
+    grid = GridSearchCV(pipe, param_grid=param_grid, cv=5, scoring="accuracy")
+    grid.fit(X_train, y_train)
+
+    best_k = grid.best_params_["kneighborsclassifier__n_neighbors"]
+    test_acc = grid.score(X_test, y_test)
+    results.append({"Species": species, "Best k": best_k, "CV Accuracy": round(grid.best_score_, 3), "Test Accuracy": round(test_acc, 3)})
+
+    print(f"=== {species} (Best k={best_k}) ===")
+    print(classification_report(y_test, grid.predict(X_test)))
+
+# Summary comparison table across all 3 species
+summary_df = pd.DataFrame(results)
+summary_df
 ```
