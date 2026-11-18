@@ -1,7 +1,7 @@
 [project]
-name = "dcsi-522-group-36-credit-card-transactions"
+name = "dsci-522-group-36-penguins"
 version = "0.1.0"
-description = "Add your description here"
+description = "Predicting Palmer penguin sex from physical measurements"
 readme = "README.md"
 authors = [
     { name = "Eniola Oladimeji", email = "eniolaoladimeji03@gmail.com" }
@@ -12,13 +12,7 @@ dependencies = [
     "matplotlib>=3.11.2",
     "numpy>=2.5.5",
     "pandas>=3.1.1",
+    "requests",
     "scikit-learn>=1.9.1",
     "seaborn>=0.13.2",
 ]
-
-[project.scripts]
-dcsi-522-group-36-credit-card-transactions = "dcsi_522_group_36_credit_card_transactions:main"
-
-[build-system]
-requires = ["uv_build>=0.12.5,<0.13.0"]
-build-backend = "uv_build"
