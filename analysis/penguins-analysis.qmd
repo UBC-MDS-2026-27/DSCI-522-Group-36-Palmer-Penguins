@@ -141,3 +141,9 @@ Despite strong performance, several methodological assumptions and limitations m
 The broader impact of this approach lies in making wildlife demographic monitoring faster, cheaper, and less invasive. Accurate sex ratios are critical for estimating breeding population viability and detecting sex-biased mortality from climate change or fisheries interactions. 
 
 For future work, it would be interesting to test if we can still predict sex accurately without using body mass, since weight changes so much across seasons—for example, by using bill shape ratios or island location instead. Researchers could also compare k-Nearest Neighbors with models like logistic regression to get probability scores, which would help biologists see when a prediction is uncertain and needs a DNA test to be sure.
+
+## References
+1. Horst, A. M., Hill, A. P., & Gorman, K. B. (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data (R package version 0.1.0). github.io
+2. Cover, T., & Hart, P. (1967). Nearest neighbor pattern classification. IEEE Transactions on Information Theory, 13(1), 21–27. doi.org
+3. Gorman, K. B., Williams, T. D., & Fraser, W. R. (2014). Ecological sexual dimorphism and environmental variability within a community of Antarctic penguins (genus Pygoscelis). PLoS ONE, 9(3), e90081. doi.org
+4. Williams, T. D. (1995). The Penguins: Spheniscidae. Oxford University Press.
