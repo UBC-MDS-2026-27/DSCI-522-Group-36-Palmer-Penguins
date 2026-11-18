@@ -1,34 +1,44 @@
 # DCSI-522 Group 36: Palmer Penguins Analysis
-Authors: Eniola Oladimeji, Rachel Yan, David Zhang, Lareina Lyu
+**Authors: Eniola Oladimeji, Rachel Yan, David Zhang, Lareina Lyu**
 
 ## Summary
-In this project, we use the Palmer Penguins data set to build a predictive model
-from penguin body measurements, such as bill length, flipper length, and body mass.
-Our research question and findings will be added as the analysis progresses.
+In this project, we asked whether we can predict a penguin's sex
+from its physical measurements, such as flipper length, bill length,
+bill depth, and body mass.
+We found that a k-nearest neighbours model predicted sex with high accuracy for all three species.
+This suggests that simple body measurements could help researchers
+identify penguin sex in the field, although our test sets were small.
 
-## Report
-The rendered report can be found here.
-
-## Environment Setup
-This project uses `uv` for Python dependency management. After cloning the repo, run:
-```bash
-uv sync
-```
 
 ## Dataset
 The raw dataset is located at `data/raw/penguins.csv`.
 The dataset contains measurement of 344 penguins of three species, which are Adélie, Chinstrap, and Gentoo,  collected on three islands in the Palmer Archipelago, Antarctica.
 
 ## How to run the analysis
-1. Clone this repository and move into it
+1. Install [Git](https://git-scm.com/downloads),
+   [uv](https://docs.astral.sh/uv/getting-started/installation/),
+   and [Quarto](https://quarto.org/docs/get-started/).
+
+2. Install TinyTeX, which Quarto needs to render the report to PDF:
+
+   ```bash
+   quarto install tinytex
+   ```
+
+3. Clone this repository and move into it
  ```bash
    git clone https://github.com/UBC-MDS-2026-27/DSCI-522-Group-36-Palmer-Penguins.git
    cd DSCI-522-Group-36-Palmer-Penguins
 ```
-2. Set up the environment
+4. Set up the environment
  ```bash
    uv sync
 ```
+5. Render the report:
+
+   ```bash
+   uv run quarto render analysis/penguins-analysis.qmd
+   ```
 tbc
 
 ## Dependencies
