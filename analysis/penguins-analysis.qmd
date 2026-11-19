@@ -169,7 +169,7 @@ Finally, because body mass is measured in grams (values in the thousands) while 
 
 ```{python}
 #Question: Can we predict a penguin's sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
-# EDIT 1: removed df_clean / features / target lines (already defined in Methods)
+
 pipe = make_pipeline(
     SimpleImputer(strategy="median"),
     StandardScaler(),
@@ -180,7 +180,7 @@ param_grid = {"kneighborsclassifier__n_neighbors": range(1, 20, 2)}
 results = []
 
 for species in ["Adelie", "Chinstrap", "Gentoo"]:
-    # EDIT 1: reuse the training/test split made in Methods
+    #reuse the training/test split made in Methods
     X_train, X_test, y_train, y_test = splits[species]
 
     grid = GridSearchCV(pipe, param_grid=param_grid, cv=5, scoring="accuracy")
@@ -189,7 +189,7 @@ for species in ["Adelie", "Chinstrap", "Gentoo"]:
     best_k = grid.best_params_["kneighborsclassifier__n_neighbors"]
     test_acc = grid.score(X_test, y_test)
     y_pred = grid.predict(X_test)
-    # EDIT 2: added "Correct" and "Test size" columns
+
     results.append({"Species": species, "Best k": best_k, "CV Accuracy": round(grid.best_score_, 3), "Test Accuracy": round(test_acc, 3),
                     "Correct": int((y_pred == y_test).sum()), "Test size": len(y_test)})
 
