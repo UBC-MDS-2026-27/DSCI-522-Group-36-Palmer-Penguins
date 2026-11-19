@@ -1,18 +1,18 @@
 [project]
 name = "dsci-522-group-36-penguins"
-version = "0.1.0"
-description = "Predicting Palmer penguin sex from physical measurements"
-readme = "README.md"
-authors = [
-    { name = "Eniola Oladimeji", email = "eniolaoladimeji03@gmail.com" }
-]
+version = "0.0.1"
 requires-python = ">=3.14"
 dependencies = [
-    "jupyter>=1.1.1",
-    "matplotlib>=3.11.2",
-    "numpy>=2.5.5",
-    "pandas>=3.1.1",
-    "requests",
-    "scikit-learn>=1.9.1",
-    "seaborn>=0.13.2",
+    "ipykernel==7.4.0",
+    "matplotlib==3.11.2",
+    "nbclient==0.11.0",
+    "numpy==2.5.5",
+    "pandas==3.1.1",
+    "pyyaml==6.0.3",
+    "requests==2.34.2",
+    "scikit-learn==1.9.1",
+    "seaborn==0.13.2",
 ]
+[tool.uv]
+# `uv add` writes an exact version (==)
+add-bounds = "exact"
