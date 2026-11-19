@@ -8,41 +8,33 @@ format:
   pdf:
     toc: true
 execute:
-  echo: false
+  echo: true
   warning: false
 jupyter: python3
 ---
 
 ## Summary 
-In this project, we investigate whether the biological sex (male or female) of adult Palmer penguins can be accurately predicted from four measurements: bill length, bill depth, flipper length, and body mass. 
-Using data from 333 sexed penguins across three species (Adelie, Chinstrap, and Gentoo) we trained separate k-Nearest Neighbors (k-NN) classifiers for each species using 5-fold cross-validation. 
-Our models achieved test set accuracies of 89.2% for Adélie, 88.2% for Chinstrap, and 96.7% for Gentoo penguins. 
+In this project, we investigate whether the biological sex (male or female) of adult Palmer penguins can be accurately predicted from four measurements: bill length, bill depth, flipper length, and body mass. Using data from 333 sexed penguins across three species (Adélie, Chinstrap, and Gentoo), we trained a separate k-Nearest Neighbors (k-NN) classifier for each species, choosing the number of neighbors with 5-fold cross-validation. On the held-out test sets, our models correctly classified 32 of 37 Adélie penguins (86.5%), 16 of 17 Chinstrap penguins (94.1%), and 29 of 30 Gentoo penguins (96.7%), well above the roughly 50% accuracy of always predicting the more common sex. These results show that sexual dimorphism in body size is strong enough to classify penguin sex reliably without genetic testing. However, because some males and females overlap in size and our test sets are small, particularly for Chinstrap penguins, we recommend using the model as a quick first estimate in the field, with DNA testing reserved for birds whose predicted sex is uncertain. 
 
 ## Introduction 
-Determining the biological sex of seabirds is essential for ecological monitoring, population modeling as males and females often exhibit different behaviors, survival rates, and energetic demands during breeding seasons (Williams, 1995; Gorman et al., 2014). 
+Determining the biological sex of seabirds is essential for ecological monitoring and population modeling, as males and females often exhibit different behaviors, survival rates, and energetic demands during breeding seasons (Williams, 1995; Gorman et al., 2014). 
 However, many penguin species are considered sexually monomorphic to the human eye, meaning males and females share identical plumage patterns and cannot be reliably distinguished visually in the field (Gorman et al., 2014). 
 
-Currently, the most reliable way to determine a penguin’s sex is through molecular testing, which requires collecting blood or feather samples, storing them in remote field conditions, and sending them to a laboratory for analysis. This process can take weeks, adds cost, and requires additional handling that can stress the birds. Observing breeding behavior can also reveal sex, but only during certain parts of the breeding season and only after long periods of observation. As a result, researchers often have to wait or rely on incomplete information when studying how males and females differ in their foraging, survival, or response to environmental change. This matters especially in Antarctica, where rapid warming along the Antarctic Peninsula may affect males and females differently, and where accurate sex ratios are needed to judge the health of breeding populations. If external body measurements can accurately predict sex, field researchers can rapidly classify individuals using simple, non-invasive calipers and scales. In this report, we ask: Can we accurately predict the sex (male or female) of Adelie, Chinstrap, and Gentoo penguins from their bill length, bill depth, flipper length, and body mass using species-specific k-Nearest Neighbors (k-NN) classification models?
+Currently, the most reliable way to determine a penguin’s sex is through molecular testing, which requires collecting blood or feather samples, storing them in remote field conditions, and sending them to a laboratory for analysis. This process can take weeks, adds cost, and requires additional handling that can stress the birds. Observing breeding behavior can also reveal sex, but only during certain parts of the breeding season and only after long periods of observation. As a result, researchers often have to wait or rely on incomplete information when studying how males and females differ in their foraging, survival, or response to environmental change. This matters especially in Antarctica, where rapid warming along the Antarctic Peninsula may affect males and females differently, and where accurate sex ratios are needed to judge the health of breeding populations. If external body measurements can accurately predict sex, field researchers can rapidly classify individuals using simple, non-invasive calipers and scales. In this report, we ask: **Can we accurately predict the sex (male or female) of Adélie, Chinstrap, and Gentoo penguins from their bill length, bill depth, flipper length, and body mass using species-specific k-Nearest Neighbors (k-NN) classification models?**
 
-We use the Palmer Archipelago (Antarctica) penguin dataset originally collected by Dr. Kristen Gorman and the Palmer Station Long Term Ecological Research (LTER) program, and curated for data science by Horst et al. (2020). Each row in the dataset represents an individual adult penguin observed on one of three islands (Biscoe, Dream, or Torgersen) between 2007 and 2009. From the available variables, we use species (Adelie, Chinstrap, or Gentoo) to stratify our models, four continuous physical predictors (bill length and bill depth in millimeters, flipper length in millimeters, and body mass in grams), and our binary target variable, biological sex, which takes the values female or male.
-
-This dataset is well suited to our question because sex was recorded for almost every penguin, and all four measurements were taken on the same individuals. Of the 344 penguins in the dataset, 333 have both a recorded sex and complete measurements, giving us labeled examples from which a model can learn the relationship between body size and sex.
+We use the Palmer Archipelago (Antarctica) penguin dataset originally collected by Dr. Kristen Gorman and the Palmer Station Long Term Ecological Research (LTER) program (Gorman et al., 2014), and curated for data science by Horst et al. (2020). Each row in the dataset represents an individual adult penguin observed on one of three islands (Biscoe, Dream, or Torgersen) between 2007 and 2009. From the available variables, we use species (Adélie, Chinstrap, or Gentoo) to stratify our models, four continuous physical predictors (bill length and bill depth in millimeters, flipper length in millimeters, and body mass in grams), and our binary target variable, biological sex, which takes the values female or male. This dataset is well suited to our question because sex was recorded for almost every penguin, and all four measurements were taken on the same individuals. Of the 344 penguins in the dataset, 333 have both a recorded sex and complete measurements, giving us labeled examples from which a model can learn the relationship between body size and sex.
 
 ## Methods
 
-### Data Acquisition, Cleaning, and Splitting
-
-To ensure full reproducibility, our analysis programmatically downloads the raw dataset directly from its public repository and saves an unmodified copy. Next, we inspect the dataset for missing values in our target variable (sex). Observations lacking a recorded sex label cannot be used for supervised training or evaluation, so we remove those rows by using drop.na
-
-Crucially, to uphold the golden rule of machine learning—ensuring that test observations never influence exploratory decisions, feature scaling, or hyperparameter selection— we split the cleaned dataset into training (75%) and test (25%) subsets prior to performing any exploratory data analysis or preprocessing. Because body size differs substantially across penguin species (for instance, a female Gentoo penguin is typically heavier than a male Adelie penguin), we partition the data separately for each species using stratified random sampling to preserve equal proportions of males and females in both sets.
-
-Our findings demonstrate that sexual dimorphism in body size is strong enough to reliably classify penguin sex without invasive genetic testing or capture stress, though smaller sample sizes within individual species (particularly Chinstrap) and overlap among sub-adult individuals remain key limitations.
+### Data
+The data were collected by Dr. Kristen Gorman and the Palmer Station Long Term Ecological Research (LTER) program between 2007 and 2009 (Gorman et al., 2014), and curated for data science as the palmerpenguins data set (Horst et al., 2020), which can be found [here](https://allisonhorst.github.io/palmerpenguins/). To ensure full reproducibility, our analysis downloads the data directly from the palmerpenguins repository and saves an unmodified copy to `data/raw/`. Observations without a recorded sex cannot be used for supervised training or evaluation, so we remove them, along with the two penguins that are missing all body measurements. This leaves 333 penguins, and we save the cleaned data to `data/processed/`.
 
 ```{python}
-from pathlib import Path
+import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import requests
 import seaborn as sns
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import ConfusionMatrixDisplay, classification_report
@@ -50,18 +42,17 @@ from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-import os
-import requests
 
-#1. create the data folders if they don't exist
+# create the data folders if they don't exist
+# (git does not track empty folders)
 os.makedirs("../data/raw", exist_ok=True)
 os.makedirs("../data/processed", exist_ok=True)
 
-#2. download the Palmer penguins data (CSV) from the palmerpenguins repository
+# download the Palmer penguins data (CSV) from the palmerpenguins repository
 url = "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv"
 
 request = requests.get(url)
-with open("../data/raw/penguins.csv", 'wb') as f:
+with open("../data/raw/penguins.csv", "wb") as f:
     f.write(request.content)
 
 df_raw = pd.read_csv("../data/raw/penguins.csv")
@@ -72,30 +63,40 @@ cols_needed = ["species", "sex", "flipper_length_mm", "bill_length_mm",
                "bill_depth_mm", "body_mass_g"]
 df_clean = df_raw[cols_needed].dropna().reset_index(drop=True)
 df_clean.to_csv("../data/processed/penguins_clean.csv", index=False)
+```
 
-# 3. Split data per species BEFORE exploratory analysis
+### Analysis
+To uphold the golden rule of machine learning—ensuring that test observations never influence exploratory decisions, feature scaling, or hyperparameter selection— we split the cleaned dataset into training (75%) and test (25%) subsets prior to performing any exploratory data analysis or preprocessing. Because body size differs substantially across penguin species (for instance, a female Gentoo penguin is typically heavier than a male Adelie penguin), we partition the data separately for each species using stratified random sampling to preserve equal proportions of males and females in both sets. The split data is saved in the processed folder as well with the cleaned data. 
+
+```{python}
+# split each species before exploratory analysis
 features = ["flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
 target = "sex"
 species_list = ["Adelie", "Chinstrap", "Gentoo"]
 
 splits = {}
-train_frames = []
+train_frames, test_frames = [], []
 for sp in species_list:
     sub = df_clean[df_clean["species"] == sp]
     X_train, X_test, y_train, y_test = train_test_split(
         sub[features], sub[target], test_size=0.25, stratify=sub[target], random_state=522
     )
     splits[sp] = (X_train, X_test, y_train, y_test)
-    t_df = X_train.copy()
-    t_df["sex"] = y_train
-    t_df["species"] = sp
-    train_frames.append(t_df)
+    train_frames.append(X_train.assign(sex=y_train, species=sp))
+    test_frames.append(X_test.assign(sex=y_test, species=sp))
 
 train_eda = pd.concat(train_frames, ignore_index=True)
+test_df = pd.concat(test_frames, ignore_index=True)
+train_eda.to_csv("../data/processed/penguins_train.csv", index=False)
+test_df.to_csv("../data/processed/penguins_test.csv", index=False)
 ```
 
-### Exploratory Data Analysis
+We used a k-Nearest Neighbors (k-NN) classifier for each species (Cover & Hart, 1967), which predicts a penguin's sex as the most common sex among the k training penguins with the most similar measurements. This suits our question because males and females form fairly distinct groups when their measurements are combined, and k-NN is simple to explain to field researchers. Because k-NN relies on distances, all four measurements were standardized (with median imputation as a safeguard against missing values) inside a pipeline, so these steps were learned from the training data only. We chose k using 5-fold cross-validation on the training set, trying odd values from 1 to 19, and used the test set only once, to evaluate the final models.
 
+We evaluated the models using accuracy, the proportion of penguins whose sex is predicted correctly. Accuracy is appropriate because males and females are roughly balanced within each species and both types of error are equally costly; we compare it with a baseline of about 50%, the accuracy of always predicting the more common sex, and also report precision and recall for each sex. The analysis was performed in Python (Van Rossum & Drake, 2009) using requests (Reitz, 2011), pandas (McKinney, 2010), scikit-learn (Pedregosa et al., 2011), Matplotlib (Hunter, 2007), and seaborn (Waskom, 2021); the code is available at https://github.com/UBC-MDS-2026-27/DSCI-522-Group-36-Palmer-Penguins.
+
+## Results
+### Exploratory Analysis
 Before building our models, we explored the training data to check whether male and female penguins differ in the four physical measurements. This step is essential to our question since if males and females had similar measurements, there would be little reason to expect a classifier to predict sex from them. All exploratory analysis uses the training set only, so the test set does not influence any of our decisions.
 
 @tbl-summary shows the number of penguins and the mean of each measurement for each species and sex in the training set.
@@ -164,12 +165,11 @@ plt.show()
 
 Finally, because body mass is measured in grams (values in the thousands) while the other measurements are in millimeters (values in the tens or hundreds), the features are on very different scales. Since k-NN classifies penguins using distances between their measurements, body mass would dominate those distances if left unscaled. This is why our modeling pipeline standardizes all four measurements before fitting the classifier.
 
-```{python}
-#Question: Can we predict a penguin’s sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
-df_clean = df_raw.dropna(subset=["sex"])
-features = ["flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
-target = "sex"
+### Model
 
+```{python}
+#Question: Can we predict a penguin's sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
+# EDIT 1: removed df_clean / features / target lines (already defined in Methods)
 pipe = make_pipeline(
     SimpleImputer(strategy="median"),
     StandardScaler(),
@@ -180,40 +180,59 @@ param_grid = {"kneighborsclassifier__n_neighbors": range(1, 20, 2)}
 results = []
 
 for species in ["Adelie", "Chinstrap", "Gentoo"]:
-    sub = df_clean[df_clean["species"] == species]
-    X_train, X_test, y_train, y_test = train_test_split(
-        sub[features], sub[target], test_size=0.25, stratify=sub[target], random_state=522
-    )
+    # EDIT 1: reuse the training/test split made in Methods
+    X_train, X_test, y_train, y_test = splits[species]
 
     grid = GridSearchCV(pipe, param_grid=param_grid, cv=5, scoring="accuracy")
     grid.fit(X_train, y_train)
 
     best_k = grid.best_params_["kneighborsclassifier__n_neighbors"]
     test_acc = grid.score(X_test, y_test)
-    results.append({"Species": species, "Best k": best_k, "CV Accuracy": round(grid.best_score_, 3), "Test Accuracy": round(test_acc, 3)})
+    y_pred = grid.predict(X_test)
+    # EDIT 2: added "Correct" and "Test size" columns
+    results.append({"Species": species, "Best k": best_k, "CV Accuracy": round(grid.best_score_, 3), "Test Accuracy": round(test_acc, 3),
+                    "Correct": int((y_pred == y_test).sum()), "Test size": len(y_test)})
 
     print(f"=== {species} (Best k={best_k}) ===")
-    print(classification_report(y_test, grid.predict(X_test)))
+    print(classification_report(y_test, y_pred))
+```
 
+```{python}
+#| label: tbl-results
+#| tbl-cap: "Selected number of neighbors, cross-validation (CV) accuracy, and test accuracy for each species."
 # Summary comparison table across all 3 species
 summary_df = pd.DataFrame(results)
 summary_df
 ```
 
-## Results 
-Cross-validation selected an optimal neighborhood size of $k = 9$ for all three species. As summarized in the table above, all three models generalized well to the held-out test set, achieving test accuracies of 86.5% for Adélie (32 of 37 correct), 94.1% for Chinstrap (16 of 17 correct), and 96.7% for Gentoo (29 of 30 correct)—substantially outperforming a 50% random-guessing baseline.
+Cross-validation selected k = 9 for all three species. As summarized in @tbl-results, the final models correctly classified 32 of 37 Adélie penguins (86.5%), 16 of 17 Chinstrap penguins (94.1%), and 29 of 30 Gentoo penguins (96.7%) in the test set, well above the roughly 50% accuracy of always predicting the more common sex. Test accuracy was close to or slightly above cross-validation accuracy for Chinstrap and Gentoo penguins, but lower for Adélie penguins (86.5% compared with 94.5%), which may reflect the variability of a small test set. The precision and recall values are [similar / different] for the two sexes, which indicates that the models [do not / do] systematically favor one sex.
 
 ## Discussion
-Our results confirm that external physical measurements can accurately predict the biological sex of adult Palmer penguins when stratified by species, achieving high held-out test accuracies for all penguins. Our findings directly answer our research question by demonstrating that bill length, bill depth, flipper length, and body mass carry sufficient sex-specific signal to classify male and female penguins reliably.
+Our results confirm that external physical measurements can accurately predict the biological sex of adult Palmer penguins when stratified by species, achieving high held-out test accuracies for all penguins. Our findings directly answer our research question by demonstrating that bill length, bill depth, flipper length, and body mass carry sufficient sex-specific signal to classify male and female penguins reliably. These results are consistent with our exploratory analysis, which showed that males are larger than females on average in every species (@tbl-summary) and that the sexes form fairly distinct groups when measurements are combined (@fig-scatter). The remaining errors are also expected: @fig-mass-box showed that the body sizes of males and females overlap, so a small male or a large female can be misclassified however well the model is tuned.
 
-Despite strong performance, several methodological assumptions and limitations must be considered. First, our workflow assumes that a penguin's species is already known before predicting its sex; while visual species identification is straightforward in the field due to distinct head markings, any species misidentification would degrade sex classification accuracy. Second, stratifying the dataset by species reduced our sample sizes, leaving only 17 Chinstrap penguins in the test set, where a single misclassification shifts test accuracy by nearly six percentage points. Third, because k-Nearest Neighbors relies on Euclidean distances across physical measurements, seasonal weight fluctuations—such as mass loss during fasting, incubationor regional size differences could shift feature distributions and reduce accuracy if the model is applied outside the Palmer Archipelago without local recalibration.
+Despite strong performance, several methodological assumptions and limitations must be considered. First, our workflow assumes that a penguin's species is already known before predicting its sex; while visual species identification is straightforward in the field due to distinct head markings, any species misidentification would degrade sex classification accuracy. Second, stratifying the dataset by species reduced our sample sizes, leaving only 17 Chinstrap penguins in the test set, where a single misclassification shifts test accuracy by nearly six percentage points. Third, because k-Nearest Neighbors relies on Euclidean distances across physical measurements, seasonal weight fluctuations, such as mass loss during fasting and incubation, or regional size differences could shift feature distributions and reduce accuracy if the model is applied outside the Palmer Archipelago without local recalibration.
 
 The broader impact of this approach lies in making wildlife demographic monitoring faster, cheaper, and less invasive. Accurate sex ratios are critical for estimating breeding population viability and detecting sex-biased mortality from climate change or fisheries interactions. 
 
 For future work, it would be interesting to test if we can still predict sex accurately without using body mass, since weight changes so much across seasons—for example, by using bill shape ratios or island location instead. Researchers could also compare k-Nearest Neighbors with models like logistic regression to get probability scores, which would help biologists see when a prediction is uncertain and needs a DNA test to be sure.
 
 ## References
-1. Horst, A. M., Hill, A. P., & Gorman, K. B. (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data (R package version 0.1.0). github.io
-2. Cover, T., & Hart, P. (1967). Nearest neighbor pattern classification. IEEE Transactions on Information Theory, 13(1), 21–27. doi.org
-3. Gorman, K. B., Williams, T. D., & Fraser, W. R. (2014). Ecological sexual dimorphism and environmental variability within a community of Antarctic penguins (genus Pygoscelis). PLoS ONE, 9(3), e90081. doi.org
-4. Williams, T. D. (1995). The Penguins: Spheniscidae. Oxford University Press.
+Cover, T., & Hart, P. (1967). Nearest neighbor pattern classification. *IEEE Transactions on Information Theory*, 13(1), 21–27. https://doi.org/10.1109/TIT.1967.1053964
+
+Gorman, K. B., Williams, T. D., & Fraser, W. R. (2014). Ecological sexual dimorphism and environmental variability within a community of Antarctic penguins (genus *Pygoscelis*). *PLoS ONE*, 9(3), e90081. https://doi.org/10.1371/journal.pone.0090081
+
+Horst, A. M., Hill, A. P., & Gorman, K. B. (2020). *palmerpenguins: Palmer Archipelago (Antarctica) penguin data* (R package version 0.1.0). https://allisonhorst.github.io/palmerpenguins/
+
+Hunter, J. D. (2007). Matplotlib: A 2D graphics environment. *Computing in Science & Engineering*, 9(3), 90–95. https://doi.org/10.1109/MCSE.2007.55
+
+McKinney, W. (2010). Data structures for statistical computing in Python. In *Proceedings of the 9th Python in Science Conference* (pp. 56–61). https://doi.org/10.25080/Majora-92bf1922-00a
+
+Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J., Passos, A., Cournapeau, D., Brucher, M., Perrot, M., & Duchesnay, É. (2011). Scikit-learn: Machine learning in Python. *Journal of Machine Learning Research*, 12, 2825–2830.
+
+Reitz, K. (2011). Requests: HTTP for humans. https://requests.readthedocs.io/
+
+Van Rossum, G., & Drake, F. L. (2009). *Python 3 reference manual*. CreateSpace.
+
+Waskom, M. L. (2021). seaborn: Statistical data visualization. *Journal of Open Source Software*, 6(60), 3021. https://doi.org/10.21105/joss.03021
+
+Williams, T. D. (1995). *The penguins: Spheniscidae*. Oxford University Press.
