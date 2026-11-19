@@ -15,24 +15,26 @@ jupyter: python3
 
 ## Summary 
 In this project, we investigate whether the biological sex (male or female) of adult Palmer penguins can be accurately predicted from four measurements: bill length, bill depth, flipper length, and body mass. 
-Using data from 333 sexed penguins across three species (Adélie, Chinstrap, and Gentoo) we trained separate k-Nearest Neighbors (k-NN) classifiers for each species using 5-fold cross-validation. 
+Using data from 333 sexed penguins across three species (Adelie, Chinstrap, and Gentoo) we trained separate k-Nearest Neighbors (k-NN) classifiers for each species using 5-fold cross-validation. 
 Our models achieved test set accuracies of 89.2% for Adélie, 88.2% for Chinstrap, and 96.7% for Gentoo penguins. 
 
 ## Introduction 
 Determining the biological sex of seabirds is essential for ecological monitoring, population modeling as males and females often exhibit different behaviors, survival rates, and energetic demands during breeding seasons (Williams, 1995; Gorman et al., 2014). 
 However, many penguin species are considered sexually monomorphic to the human eye, meaning males and females share identical plumage patterns and cannot be reliably distinguished visually in the field (Gorman et al., 2014). 
 
-If external body measurements can accurately predict sex, field researchers can rapidly classify individuals using simple, non-invasive calipers and scales. In this report, we ask: **Can we accurately predict the sex (male or female) of Adélie, Chinstrap, and Gentoo penguins from their bill length, bill depth, flipper length, and body mass using species-specific k-Nearest Neighbors (k-NN) classification models?**
+Currently, the most reliable way to determine a penguin’s sex is through molecular testing, which requires collecting blood or feather samples, storing them in remote field conditions, and sending them to a laboratory for analysis. This process can take weeks, adds cost, and requires additional handling that can stress the birds. Observing breeding behavior can also reveal sex, but only during certain parts of the breeding season and only after long periods of observation. As a result, researchers often have to wait or rely on incomplete information when studying how males and females differ in their foraging, survival, or response to environmental change. This matters especially in Antarctica, where rapid warming along the Antarctic Peninsula may affect males and females differently, and where accurate sex ratios are needed to judge the health of breeding populations. If external body measurements can accurately predict sex, field researchers can rapidly classify individuals using simple, non-invasive calipers and scales. In this report, we ask: Can we accurately predict the sex (male or female) of Adelie, Chinstrap, and Gentoo penguins from their bill length, bill depth, flipper length, and body mass using species-specific k-Nearest Neighbors (k-NN) classification models?
 
-We use the Palmer Archipelago (Antarctica) penguin dataset originally collected by Dr. Kristen Gorman and the Palmer Station Long Term Ecological Research (LTER) program, and curated for data science by Horst et al. (2020). Each row in the dataset represents an individual adult penguin observed on one of three islands (Biscoe, Dream, or Torgersen) between 2007 and 2009. From the available variables, we use species (*Adelie*, *Chinstrap*, or *Gentoo*) to stratify our models, four continuous physical predictors—bill length (in millimeters), bill depth (in millimeters), flipper length (in millimeters), and body mass (in grams)—and our binary target variable, biological sex (`female` or `male`). 
+We use the Palmer Archipelago (Antarctica) penguin dataset originally collected by Dr. Kristen Gorman and the Palmer Station Long Term Ecological Research (LTER) program, and curated for data science by Horst et al. (2020). Each row in the dataset represents an individual adult penguin observed on one of three islands (Biscoe, Dream, or Torgersen) between 2007 and 2009. From the available variables, we use species (Adelie, Chinstrap, or Gentoo) to stratify our models, four continuous physical predictors (bill length and bill depth in millimeters, flipper length in millimeters, and body mass in grams), and our binary target variable, biological sex, which takes the values female or male.
+
+This dataset is well suited to our question because sex was recorded for almost every penguin, and all four measurements were taken on the same individuals. Of the 344 penguins in the dataset, 333 have both a recorded sex and complete measurements, giving us labeled examples from which a model can learn the relationship between body size and sex.
 
 ## Methods
 
 ### Data Acquisition, Cleaning, and Splitting
 
-To ensure full reproducibility, our analysis programmatically downloads the raw dataset directly from its public repository and saves an unmodified copy to `data/raw/penguins.csv`. Next, we inspect the dataset for missing values in our target variable (sex). Observations lacking a recorded sex label cannot be used for supervised training or evaluation, so we remove those rows by using drop.na
+To ensure full reproducibility, our analysis programmatically downloads the raw dataset directly from its public repository and saves an unmodified copy. Next, we inspect the dataset for missing values in our target variable (sex). Observations lacking a recorded sex label cannot be used for supervised training or evaluation, so we remove those rows by using drop.na
 
-Crucially, to uphold the golden rule of machine learning—ensuring that test observations never influence exploratory decisions, feature scaling, or hyperparameter selection— we split the cleaned dataset into training (75%) and test (25%) subsets **prior** to performing any exploratory data analysis or preprocessing. Because body size differs substantially across penguin species (for instance, a female Gentoo penguin is typically heavier than a male Adélie penguin), we partition the data separately for each species using stratified random sampling (`random_state=522`) to preserve equal proportions of males and females in both sets.
+Crucially, to uphold the golden rule of machine learning—ensuring that test observations never influence exploratory decisions, feature scaling, or hyperparameter selection— we split the cleaned dataset into training (75%) and test (25%) subsets prior to performing any exploratory data analysis or preprocessing. Because body size differs substantially across penguin species (for instance, a female Gentoo penguin is typically heavier than a male Adelie penguin), we partition the data separately for each species using stratified random sampling to preserve equal proportions of males and females in both sets.
 
 Our findings demonstrate that sexual dimorphism in body size is strong enough to reliably classify penguin sex without invasive genetic testing or capture stress, though smaller sample sizes within individual species (particularly Chinstrap) and overlap among sub-adult individuals remain key limitations.
 
@@ -43,35 +45,33 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sklearn.impute import SimpleImputer
-from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+import os
+import requests
 
-root_dir = Path(".") if Path("data").exists() else Path("..")
-raw_path = root_dir / "data" / "raw" / "penguins.csv"
-processed_path = root_dir / "data" / "processed" / "penguins_clean.csv"
+#1. create the data folders if they don't exist
+os.makedirs("../data/raw", exist_ok=True)
+os.makedirs("../data/processed", exist_ok=True)
 
-raw_path.parent.mkdir(parents=True, exist_ok=True)
-processed_path.parent.mkdir(parents=True, exist_ok=True)
+#2. download the Palmer penguins data (CSV) from the palmerpenguins repository
+url = "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv"
 
-# 1. Download raw data from web source if not already present
-if not raw_path.exists():
-    sns.load_dataset("penguins").to_csv(raw_path, index=False)
+request = requests.get(url)
+with open("../data/raw/penguins.csv", 'wb') as f:
+    f.write(request.content)
 
-# 2. Clean data and save to data/processed/
-df_raw = pd.read_csv(raw_path)
-cols_needed = [
-    "species",
-    "sex",
-    "flipper_length_mm",
-    "bill_length_mm",
-    "bill_depth_mm",
-    "body_mass_g",
-]
+df_raw = pd.read_csv("../data/raw/penguins.csv")
+
+# keep only the variables used in the analysis and drop rows with missing
+# values (penguins with no recorded sex cannot be used to train or test the model)
+cols_needed = ["species", "sex", "flipper_length_mm", "bill_length_mm",
+               "bill_depth_mm", "body_mass_g"]
 df_clean = df_raw[cols_needed].dropna().reset_index(drop=True)
-df_clean.to_csv(processed_path, index=False)
+df_clean.to_csv("../data/processed/penguins_clean.csv", index=False)
 
 # 3. Split data per species BEFORE exploratory analysis
 features = ["flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
@@ -93,6 +93,76 @@ for sp in species_list:
 
 train_eda = pd.concat(train_frames, ignore_index=True)
 ```
+
+### Exploratory Data Analysis
+
+Before building our models, we explored the training data to check whether male and female penguins differ in the four physical measurements. This step is essential to our question since if males and females had similar measurements, there would be little reason to expect a classifier to predict sex from them. All exploratory analysis uses the training set only, so the test set does not influence any of our decisions.
+
+@tbl-summary shows the number of penguins and the mean of each measurement for each species and sex in the training set.
+
+```{python}
+#| label: tbl-summary
+#| tbl-cap: "Number of penguins and mean physical measurements by species and sex (training set)."
+summary_table = (
+    train_eda.groupby(["species", "sex"])
+    .agg(
+        count=("body_mass_g", "size"),
+        body_mass=("body_mass_g", "mean"),
+        flipper_length=("flipper_length_mm", "mean"),
+        bill_length=("bill_length_mm", "mean"),
+        bill_depth=("bill_depth_mm", "mean"),
+    )
+    .round(1)
+    .rename(columns={
+        "count": "Count",
+        "body_mass": "Body mass (g)",
+        "flipper_length": "Flipper length (mm)",
+        "bill_length": "Bill length (mm)",
+        "bill_depth": "Bill depth (mm)",
+    })
+)
+summary_table.index.names = ["Species", "Sex"]
+sex_order = sorted(train_eda["sex"].unique())
+summary_table
+```
+
+Within each species, males are on average heavier than females and tend to have longer flippers, longer bills, and deeper bills. The numbers of males and females are close to equal in every species, so a model that always guessed the same sex would be correct only about half of the time; this gives a baseline of roughly 50% accuracy for our models to beat. The table also shows that Gentoo penguins are much larger than Adélie and Chinstrap penguins, which supports our decision to build a separate model for each species.
+
+@fig-mass-box shows the distribution of body mass by sex within each species. In every species, the typical male is heavier than the typical female. However, the boxes overlap, meaning that some large females are heavier than some small males. Body mass alone therefore cannot perfectly separate the sexes.
+
+```{python}
+#| label: fig-mass-box
+#| fig-cap: "Body mass of female and male penguins in each species (training set). Males are heavier on average, but the ranges overlap."
+fig, ax = plt.subplots(figsize=(8, 4))
+sns.boxplot(
+    data=train_eda, x="species", y="body_mass_g", hue="sex",
+    order=species_list, hue_order=sex_order, ax=ax,
+)
+ax.set_xlabel("Species")
+ax.set_ylabel("Body mass (g)")
+ax.legend(title="Sex")
+plt.tight_layout()
+plt.show()
+```
+
+@fig-scatter shows that combining two measurements separates the sexes more clearly than one measurement on its own. When bill depth is plotted against body mass, males and females form fairly distinct groups within each species. This suggests that a model using all four measurements together should be able to predict sex well. It also motivates our choice of k-NN, which classifies a penguin based on the sex of the most similar penguins in the training data: if males and females form separate groups, a penguin's nearest neighbors are likely to share its sex.
+
+```{python}
+#| label: fig-scatter
+#| fig-cap: "Bill depth against body mass for each species, colored by sex (training set). Males and females form fairly distinct groups when two measurements are combined."
+g = sns.relplot(
+    data=train_eda, x="body_mass_g", y="bill_depth_mm", hue="sex",
+    col="species", col_order=species_list, hue_order=sex_order,
+    height=3.2, aspect=0.9, alpha=0.7,
+    facet_kws={"sharex": False, "sharey": False},
+)
+g.set_axis_labels("Body mass (g)", "Bill depth (mm)")
+g.set_titles("{col_name}")
+g.legend.set_title("Sex")
+plt.show()
+```
+
+Finally, because body mass is measured in grams (values in the thousands) while the other measurements are in millimeters (values in the tens or hundreds), the features are on very different scales. Since k-NN classifies penguins using distances between their measurements, body mass would dominate those distances if left unscaled. This is why our modeling pipeline standardizes all four measurements before fitting the classifier.
 
 ```{python}
 #Question: Can we predict a penguin’s sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN
