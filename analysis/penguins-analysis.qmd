@@ -7,6 +7,9 @@ format:
     embed-resources: true
   pdf:
     toc: true
+    include-in-header:
+      text: |
+        \usepackage{multirow}
 execute:
   echo: true
   warning: false
@@ -14,7 +17,9 @@ jupyter: python3
 ---
 
 ## Summary 
-In this project, we investigate whether the biological sex (male or female) of adult Palmer penguins can be accurately predicted from four measurements: bill length, bill depth, flipper length, and body mass. Using data from 333 sexed penguins across three species (Adélie, Chinstrap, and Gentoo), we trained a separate k-Nearest Neighbors (k-NN) classifier for each species, choosing the number of neighbors with 5-fold cross-validation. On the held-out test sets, our models correctly classified 32 of 37 Adélie penguins (86.5%), 16 of 17 Chinstrap penguins (94.1%), and 29 of 30 Gentoo penguins (96.7%), well above the roughly 50% accuracy of always predicting the more common sex. These results show that sexual dimorphism in body size is strong enough to classify penguin sex reliably without genetic testing. However, because some males and females overlap in size and our test sets are small, particularly for Chinstrap penguins, we recommend using the model as a quick first estimate in the field, with DNA testing reserved for birds whose predicted sex is uncertain. 
+In this project, we investigate whether the biological sex (male or female) of adult Palmer penguins can be accurately predicted from four measurements: bill length, bill depth, flipper length, and body mass. Using data from 344 sexed penguins across three species (Adélie, Chinstrap, and Gentoo), we trained a separate k-Nearest Neighbors (k-NN) classifier for each species, choosing the number of neighbors with 5-fold cross-validation. 
+
+On the held-out test sets, our models correctly classified 32 of 37 Adélie penguins (86.5%), 16 of 17 Chinstrap penguins (94.1%), and 29 of 30 Gentoo penguins (96.7%), well above the roughly 50% accuracy of always predicting the more common sex. These results show that sexual dimorphism in body size is strong enough to classify penguin sex reliably without genetic testing. However, because some males and females overlap in size and our test sets are small, particularly for Chinstrap penguins, we recommend using the model as a quick first estimate in the field, with DNA testing reserved for birds whose predicted sex is uncertain. 
 
 ## Introduction 
 Determining the biological sex of seabirds is essential for ecological monitoring and population modeling, as males and females often exhibit different behaviors, survival rates, and energetic demands during breeding seasons (Williams, 1995; Gorman et al., 2014). 
@@ -27,7 +32,7 @@ We use the Palmer Archipelago (Antarctica) penguin dataset originally collected 
 ## Methods
 
 ### Data
-The data were collected by Dr. Kristen Gorman and the Palmer Station Long Term Ecological Research (LTER) program between 2007 and 2009 (Gorman et al., 2014), and curated for data science as the palmerpenguins data set (Horst et al., 2020), which can be found [here](https://allisonhorst.github.io/palmerpenguins/). To ensure full reproducibility, our analysis downloads the data directly from the palmerpenguins repository and saves an unmodified copy to `data/raw/`. Observations without a recorded sex cannot be used for supervised training or evaluation, so we remove them, along with the two penguins that are missing all body measurements. This leaves 333 penguins, and we save the cleaned data to `data/processed/`.
+The data were collected by Dr. Kristen Gorman and the Palmer Station Long Term Ecological Research (LTER) program between 2007 and 2009 (Gorman et al., 2014), and curated for data science as the palmerpenguins data set (Horst et al., 2020), which can be found [here](https://allisonhorst.github.io/palmerpenguins/). To ensure full reproducibility, our analysis downloads the data directly from the palmerpenguins repository and saves an unmodified copy to `data/raw/`. Observations without a recorded sex cannot be used for supervised training or evaluation, so we removed the missing rows, along with the two penguins that are missing all body measurements. This leaves 333 penguins, and we save the cleaned data to `data/processed/`.
 
 ```{python}
 import os
