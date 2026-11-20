@@ -36,13 +36,13 @@ The data were collected by Dr. Kristen Gorman and the Palmer Station Long Term E
 
 ```{python}
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import requests
 import seaborn as sns
 from sklearn.impute import SimpleImputer
-from sklearn.metrics import ConfusionMatrixDisplay, classification_report
+from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
@@ -50,6 +50,8 @@ from sklearn.preprocessing import StandardScaler
 
 # create the data folders if they don't exist
 # (git does not track empty folders)
+if Path.cwd().name != "analysis":
+    os.chdir("analysis")
 os.makedirs("../data/raw", exist_ok=True)
 os.makedirs("../data/processed", exist_ok=True)
 
@@ -57,7 +59,6 @@ os.makedirs("../data/processed", exist_ok=True)
 url = "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv"
 df_raw = pd.read_csv(url)
 df_raw.to_csv("../data/raw/penguins.csv", index= False)
-
 
 # keep only the variables used in the analysis and drop rows with missing
 # values (penguins with no recorded sex cannot be used to train or test the model)
