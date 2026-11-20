@@ -1,13 +1,54 @@
-# DCSI-522-Group-36-Credit-Card-Transactions
+Credit Card Fraud Detection (DCSI-522 Group 36)
+Authors
+Eniola Oladimeji
+Rachel Yan
+Lareina Lyu
+David Zhang
 
-## Environment Setup
-This project uses `uv` for Python dependency management. After cloning the repo, run:
-```bash
+<!-- TODO: fill in once the analysis is finished. -->
+
+We asked the question: Can we predict a penguin’s sex from its measurements (flipper length, bill length)
+
+
+How to Run the Analysis
+1. Clone the repository
+bash
+git clone https://github.com/UBC-MDS-2026-27/DSCI-522-Group-36-Palmer-Penguins.git
+cd DSCI-522-Group-36-Palmer-Penguins
+2. Set up the environment
+
+This project uses uv for Python dependency management. From the repository root, run:
+
+bash
 uv sync
-```
+3. No download is needed. The cleaned dataset is included in this repository at 
+data/processed/penguins_clean.csv, and the analysis reads it from there.
 
-## Dataset Setup
-Because `creditcard.csv` exceeds GitHub's 100 MB limit, it is ignored by Git. Download `creditcard.csv` and place it in:
-`data/raw/creditcard.csv`
-EOF
 
+4. Render the report
+
+From the repository root, run:
+
+bash
+uv run quarto render analysis/penguins-analysis.qmd
+
+
+
+Dependencies
+uv for Python environment management
+Quarto for rendering the report
+Python packages are listed in pyproject.toml and installed by uv sync
+Licenses
+Code: [e.g., MIT License]
+Report and written content: [e.g., CC BY-NC-ND 4.0]
+
+See LICENSE.md for the full text.
+
+
+AI Use Statement
+
+We used generative AI (Claude) in this project to help with Git workflow questions, debug code, and draft documentation. All AI-generated content was reviewed and edited by team members, who take responsibility for the final work.
+
+Rendered Report
+
+https://ubc-mds-2026-27.github.io/DSCI-522-Group-36-Palmer-Penguins/analysis/penguins-analysis.html 
