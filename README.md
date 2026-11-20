@@ -56,8 +56,8 @@ uv run quarto render analysis/penguins-analysis.qmd
 
 ## Licenses
 
-- **Code:** <!-- TODO: e.g., MIT License -->
-- **Report and written content:** <!-- TODO: e.g., CC BY-NC-ND 4.0 -->
+- **Code:** MIT License
+- **Report and written content:** CC BY-NC-ND 4.0
 
 See [LICENSE.md](LICENSE.md) for the full text.
 
