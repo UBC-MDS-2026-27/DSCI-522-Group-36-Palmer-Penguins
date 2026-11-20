@@ -15,14 +15,16 @@ How to Run the Analysis
 bash
 git clone https://github.com/UBC-MDS-2026-27/DSCI-522-Group-36-Palmer-Penguins.git
 cd DSCI-522-Group-36-Palmer-Penguins
+
 2. Set up the environment
 
 This project uses uv for Python dependency management. From the repository root, run:
-
 bash
 uv sync
-3. No download is needed. The cleaned dataset is included in this repository at 
-data/processed/penguins_clean.csv, and the analysis reads it from there.
+
+3. Data acquisition
+No manual download is needed. Running the Quarto report automatically 
+downloads the raw dataset from the palmerpenguins repository into data/raw/ and saves the cleaned dataset to data/processed/.
 
 
 4. Render the report
