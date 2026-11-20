@@ -16,5 +16,3 @@ __pycache__/
 *.toc
 
 # Generated data files (downloaded/created by code)
-data/raw/*.csv
-data/processed/*.csv
