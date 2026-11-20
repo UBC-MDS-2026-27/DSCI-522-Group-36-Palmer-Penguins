@@ -39,7 +39,6 @@ import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import requests
 import seaborn as sns
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import ConfusionMatrixDisplay, classification_report
