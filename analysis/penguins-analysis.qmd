@@ -55,12 +55,9 @@ os.makedirs("../data/processed", exist_ok=True)
 
 # download the Palmer penguins data (CSV) from the palmerpenguins repository
 url = "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv"
+df_raw = pd.read_csv(url)
+df_raw.to_csv("../data/raw/penguins.csv", index= False)
 
-request = requests.get(url)
-with open("../data/raw/penguins.csv", "wb") as f:
-    f.write(request.content)
-
-df_raw = pd.read_csv("../data/raw/penguins.csv")
 
 # keep only the variables used in the analysis and drop rows with missing
 # values (penguins with no recorded sex cannot be used to train or test the model)
