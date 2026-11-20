@@ -2287,7 +2287,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p>The data were collected by Dr. Kristen Gorman and the Palmer Station Long Term Ecological Research (LTER) program between 2007 and 2009 (Gorman et al., 2014), and curated for data science as the palmerpenguins data set (Horst et al., 2020), which can be found <a href="https://allisonhorst.github.io/palmerpenguins/">here</a>. To ensure full reproducibility, our analysis downloads the data directly from the palmerpenguins repository and saves an unmodified copy to <code>data/raw/</code>. Observations without a recorded sex cannot be used for supervised training or evaluation, so we removed the missing rows, along with the two penguins that are missing all body measurements. This leaves 333 penguins, and we save the cleaned data to <code>data/processed/</code>.</p>
-<div id="1ef9f1ab" class="cell" data-execution_count="1">
+<div id="b0b78bff" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -2308,25 +2308,22 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># download the Palmer penguins data (CSV) from the palmerpenguins repository</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">&quot;https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv&quot;</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>request <span class="op">=</span> requests.get(url)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;../data/raw/penguins.csv&quot;</span>, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> f:</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    f.write(request.content)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>df_raw <span class="op">=</span> pd.read_csv(<span class="st">&quot;../data/raw/penguins.csv&quot;</span>)</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># keep only the variables used in the analysis and drop rows with missing</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># values (penguins with no recorded sex cannot be used to train or test the model)</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>cols_needed <span class="op">=</span> [<span class="st">&quot;species&quot;</span>, <span class="st">&quot;sex&quot;</span>, <span class="st">&quot;flipper_length_mm&quot;</span>, <span class="st">&quot;bill_length_mm&quot;</span>,</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;bill_depth_mm&quot;</span>, <span class="st">&quot;body_mass_g&quot;</span>]</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>df_clean <span class="op">=</span> df_raw[cols_needed].dropna().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>df_clean.to_csv(<span class="st">&quot;../data/processed/penguins_clean.csv&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df_raw <span class="op">=</span> pd.read_csv(url)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>df_raw.to_csv(<span class="st">&quot;../data/raw/penguins.csv&quot;</span>, index<span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># keep only the variables used in the analysis and drop rows with missing</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># values (penguins with no recorded sex cannot be used to train or test the model)</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>cols_needed <span class="op">=</span> [<span class="st">&quot;species&quot;</span>, <span class="st">&quot;sex&quot;</span>, <span class="st">&quot;flipper_length_mm&quot;</span>, <span class="st">&quot;bill_length_mm&quot;</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;bill_depth_mm&quot;</span>, <span class="st">&quot;body_mass_g&quot;</span>]</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>df_clean <span class="op">=</span> df_raw[cols_needed].dropna().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>df_clean.to_csv(<span class="st">&quot;../data/processed/penguins_clean.csv&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="analysis" class="level3">
 <h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
 <p>To uphold the golden rule of machine learning—ensuring that test observations never influence exploratory decisions, feature scaling, or hyperparameter selection— we split the cleaned dataset into training (75%) and test (25%) subsets prior to performing any exploratory data analysis or preprocessing. Because body size differs substantially across penguin species (for instance, a female Gentoo penguin is typically heavier than a male Adelie penguin), we partition the data separately for each species using stratified random sampling to preserve equal proportions of males and females in both sets. The split data is saved in the processed folder as well with the cleaned data.</p>
-<div id="04977a7e" class="cell" data-execution_count="2">
+<div id="46a3a49b" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># split each species before exploratory analysis</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">&quot;flipper_length_mm&quot;</span>, <span class="st">&quot;bill_length_mm&quot;</span>, <span class="st">&quot;bill_depth_mm&quot;</span>, <span class="st">&quot;body_mass_g&quot;</span>]</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">&quot;sex&quot;</span></span>
@@ -2386,7 +2383,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 Table 1: Number of penguins and mean physical measurements by species and sex (training set).
 </figcaption>
 <div aria-describedby="tbl-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
@@ -2527,7 +2524,7 @@ Figure 2: Bill depth against body mass for each species, colored by sex (traini
 </section>
 <section id="model" class="level3">
 <h3 class="anchored" data-anchor-id="model">Model</h3>
-<div id="c3f9930a" class="cell" data-execution_count="6">
+<div id="213d2a50" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Question: Can we predict a penguin&#39;s sex from its measurements (flipper length, bill length, bill depth, body mass) using k-NN</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> make_pipeline(</span>
@@ -2598,7 +2595,7 @@ weighted avg       0.97      0.97      0.97        30
 Table 2: Selected number of neighbors, cross-validation (CV) accuracy, and test accuracy for each species.
 </figcaption>
 <div aria-describedby="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="28">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
