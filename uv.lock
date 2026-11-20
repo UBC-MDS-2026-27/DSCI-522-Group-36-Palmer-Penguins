@@ -423,7 +423,7 @@ wheels = [
 [[package]]
 name = "dcsi-522-group-36-credit-card-transactions"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "jupyter" },
     { name = "matplotlib" },
