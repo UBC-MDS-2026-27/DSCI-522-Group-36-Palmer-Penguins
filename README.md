@@ -15,6 +15,9 @@
 
 This project asks: **can we predict a penguin's sex from its physical measurements (e.g., flipper length and bill length)?** The analysis uses the [Palmer Penguins](https://github.com/allisonhorst/palmerpenguins) dataset.
 
+We trained a separate k-nearest neighbours model for each species and found that it predicted sex with high accuracy for all three species, well above the baseline of always guessing the more common sex.
+This suggests that simple body measurements could be used as a quick first estimate of penguin sex in the field, although our test sets were small.
+
 ## Rendered Report
 
 The full report is available here: [penguins-analysis.html](https://ubc-mds-2026-27.github.io/DSCI-522-Group-36-Palmer-Penguins/analysis/penguins-analysis.html)
