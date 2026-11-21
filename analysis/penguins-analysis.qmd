@@ -48,22 +48,21 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-# create the data folders if they don't exist
-# (git does not track empty folders)
-if Path.cwd().name != "analysis":
-    os.chdir("analysis")
 os.makedirs("../data/raw", exist_ok=True)
 os.makedirs("../data/processed", exist_ok=True)
 
-# download the Palmer penguins data (CSV) from the palmerpenguins repository
 url = "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv"
 df_raw = pd.read_csv(url)
-df_raw.to_csv("../data/raw/penguins.csv", index= False)
+df_raw.to_csv("../data/raw/penguins.csv", index=False)
 
-# keep only the variables used in the analysis and drop rows with missing
-# values (penguins with no recorded sex cannot be used to train or test the model)
-cols_needed = ["species", "sex", "flipper_length_mm", "bill_length_mm",
-               "bill_depth_mm", "body_mass_g"]
+cols_needed = [
+    "species",
+    "sex",
+    "flipper_length_mm",
+    "bill_length_mm",
+    "bill_depth_mm",
+    "body_mass_g",
+]
 df_clean = df_raw[cols_needed].dropna().reset_index(drop=True)
 df_clean.to_csv("../data/processed/penguins_clean.csv", index=False)
 ```
