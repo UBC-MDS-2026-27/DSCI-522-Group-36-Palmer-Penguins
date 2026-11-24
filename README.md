@@ -48,8 +48,6 @@ docker compose run --rm analysis-env uv run quarto render analysis/penguins-anal
 
 No manual data download is needed—rendering the Quarto report automatically downloads the raw dataset from the `palmerpenguins` repository into `data/raw/` and saves the cleaned and split datasets to `data/processed/`.
 
-
-
 ### 5. How to stop the container 
 Because the render command uses the `--rm` flag, the container stops and is removed automatically by itself as soon as the render finishes. *(If you start the container in the background with `docker compose up -d`, run `docker compose down` to stop and remove it.)*
 
