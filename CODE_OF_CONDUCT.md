@@ -31,6 +31,9 @@ Examples of unacceptable behaviour include:
 - Bullying, intimidation, discrimination, or subtle expressions of bias 
 - Any other conduct that could reasonably be considered inappropriate in a professional setting
    
+## Data acquisition
+
+No manual download is needed. Rendering the Quarto report automatically downloads the raw dataset from the palmerpenguins repository into `data/raw/` and saves the cleaned dataset to `data/processed/`.
 
 ## Consequences
 

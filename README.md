@@ -10,9 +10,6 @@
 - David Zhang
 
 ## Summary
-
-<!-- TODO: Summarize the main findings once the analysis is finished. -->
-
 This project asks: **can we predict a penguin's sex from its physical measurements (e.g., flipper length and bill length)?** The analysis uses the [Palmer Penguins](https://github.com/allisonhorst/palmerpenguins) dataset.
 
 We trained a separate k-nearest neighbours model for each species and found that it predicted sex with high accuracy for all three species, well above the baseline of always guessing the more common sex.
@@ -30,32 +27,40 @@ The full report is available here: [penguins-analysis.html](https://ubc-mds-2026
 git clone https://github.com/UBC-MDS-2026-27/DSCI-522-Group-36-Palmer-Penguins.git
 cd DSCI-522-Group-36-Palmer-Penguins
 ```
-
-### 2. Set up the environment
-
-This project uses [uv](https://docs.astral.sh/uv/) for Python dependency management. From the repository root, run:
-
+> **Important:** Do not skip this step. Without an existing key file, Docker will automatically create an empty folder named `~/.ssh/id_ed25519.pub`, and SSH connections into the container will fail until you delete that folder and run `ssh-keygen -t ed25519`.
+## 2. Create an SSH key:
+Make an SSH key by running the code below in your terminal
 ```bash
-uv sync
+ssh-keygen -t ed25519
 ```
 
-### 3. Data acquisition
-
-No manual download is needed. Rendering the Quarto report automatically downloads the raw dataset from the palmerpenguins repository into `data/raw/` and saves the cleaned dataset to `data/processed/`.
+### 3. Download docker image 
+From the repository root, pull the pre-built analysis container image:
+``` bash
+docker compose pull
+```
 
 ### 4. Render the report
-
-From the repository root, run:
-
+From the repository root, run the analysis inside the container:
 ```bash
-uv run quarto render analysis/penguins-analysis.qmd
+docker compose run --rm analysis-env uv run quarto render analysis/penguins-analysis.qmd
 ```
+
+No manual data download is needed—rendering the Quarto report automatically downloads the raw dataset from the `palmerpenguins` repository into `data/raw/` and saves the cleaned and split datasets to `data/processed/`.
+
+
+
+### 5. How to stop the container 
+Because the render command uses the `--rm` flag, the container stops and is removed automatically by itself as soon as the render finishes. *(If you start the container in the background with `docker compose up -d`, run `docker compose down` to stop and remove it.)*
+
+## Contributing
+
+Want to make changes to the project? Please see [CONTRIBUTING.md](CONTRIBUTING.md) for instructions on setting up your development environment and submitting changes.
 
 ## Dependencies
 
-- [uv](https://docs.astral.sh/uv/) for Python environment management
-- [Quarto](https://quarto.org/) for rendering the report
-- Python packages listed in `pyproject.toml` (installed by `uv sync`)
+- [Docker](https://docker.com) (with Docker Compose) to run the containerized analysis environment
+- Inside the container: [uv](https://docs.astral.sh/uv/), [Quarto](https://quarto.org/), Python, and the packages listed in `pyproject.toml` and `uv.lock`
 
 ## Licenses
 
