@@ -27,9 +27,11 @@ The full report is available here: [penguins-analysis.html](https://ubc-mds-2026
 git clone https://github.com/UBC-MDS-2026-27/DSCI-522-Group-36-Palmer-Penguins.git
 cd DSCI-522-Group-36-Palmer-Penguins
 ```
-> **Important:** Do not skip this step. Without an existing key file, Docker will automatically create an empty folder named `~/.ssh/id_ed25519.pub`, and SSH connections into the container will fail until you delete that folder and run `ssh-keygen -t ed25519`.
-## 2. Create an SSH key:
-Make an SSH key by running the code below in your terminal
+> **Important:** Do not skip step 2. Without an existing key file, Docker will automatically create an empty folder named `~/.ssh/id_ed25519.pub`, and SSH connections into the container will fail until you delete that folder and run `ssh-keygen -t ed25519`.
+
+### 2. Create an SSH key (if you don't already have one)
+
+You can check if you already have an Ed25519 key by running `ls ~/.ssh/id_ed25519.pub` in your terminal. If the file does not exist, create one by running the command below and pressing **Enter** at each question:
 ```bash
 ssh-keygen -t ed25519
 ```
