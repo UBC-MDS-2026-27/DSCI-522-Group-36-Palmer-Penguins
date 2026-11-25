@@ -37,7 +37,7 @@ ssh-keygen -t ed25519
 ```
 
 ### 3. Download docker image 
-From the repository root, pull the pre-built analysis container image:
+Open Docker Desktop first, then, from the repository root, pull the pre-built analysis container image using
 ``` bash
 docker compose pull
 ```
