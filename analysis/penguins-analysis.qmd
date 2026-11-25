@@ -5,11 +5,13 @@ format:
   html:
     toc: true
     embed-resources: true
+    format-links:
+      - html
+      - text: PDF
+        href: https://github.com/UBC-MDS-2026-27/DSCI-522-Group-36-Palmer-Penguins/blob/main/analysis/penguins-analysis.pdf
+        icon: file-pdf
   typst:
     toc: true
-    include-in-header:
-      text: |
-        \usepackage{multirow}
 execute:
   echo: true
   warning: false
