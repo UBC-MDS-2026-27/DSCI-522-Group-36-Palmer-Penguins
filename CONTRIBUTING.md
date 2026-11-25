@@ -37,9 +37,7 @@ so any file you change there also changes on your computer.
 ### First-time Setup
 1. Download and install [Positron](https://positron.posit.co/download.html).
    Remote SSH support is already included, so no extra extension is needed.
-2. Complete the setup steps in the [README](README.md),
-   so that you have an ssh key and a local copy of our image.
-3. Make sure Git has your name and email:
+2. Make sure Git has your name and email:
 
    ```bash
    git config --global user.email
@@ -54,6 +52,10 @@ so any file you change there also changes on your computer.
 
    The container reads these settings from your computer,
    which means commits you make from inside it are credited to you.
+   Do this before you start the container for the first time;
+   otherwise, Docker creates an empty `~/.gitconfig` folder instead.
+3. Complete the setup steps in the [README](README.md),
+   so that you have an ssh key and a local copy of our image.
 
 ### Starting a Work Session
 1. Open Docker Desktop and wait until it is running.
@@ -106,7 +108,8 @@ so any file you change there also changes on your computer.
 ### Troubleshooting the connection
 - **Docker turned `~/.ssh/id_ed25519.pub` or `~/.gitconfig` into a folder.**
   This happens when the file did not exist the first time the container started.
-  Stop the container with `docker compose down`, delete the folder,
+  Stop the container with `docker compose down`, delete the empty folder
+  (`rmdir ~/.ssh/id_ed25519.pub` or `rmdir ~/.gitconfig`),
   create the ssh key or set your Git name and email, and try again.
 - **You are asked for a password.**
   The container cannot find your public key.
@@ -150,6 +153,12 @@ adding or upgrading one also means publishing a new image:
 5. Pull that commit with `git pull`, then download the new image with `docker compose pull`.
 6. Open a pull request for review. Once it is merged, the workflow runs again on `main`.
    After it finishes, every team member should run `git pull` on `main` followed by `docker compose pull`.
+7. If your container is already running, restart it so that it uses the new image:
+
+   ```bash
+   docker compose down
+   docker compose up -d
+   ```
   
 ## Updating the Online Report
 
