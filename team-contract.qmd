@@ -1,6 +1,6 @@
 ---
 title: "Team contract"
-subtitle: "DSCI 522, group [NUMBER]"
+subtitle: "DSCI 522, group 36"
 author:
   - "Eniola Oladimeji"
   - "Rachel Yan"
