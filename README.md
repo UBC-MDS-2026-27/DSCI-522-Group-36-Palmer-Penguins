@@ -17,7 +17,7 @@ This suggests that simple body measurements could be used as a quick first estim
 
 ## Rendered Report
 
-The full report is available here: [penguins-analysis.html](https://ubc-mds-2026-27.github.io/DSCI-522-Group-36-Palmer-Penguins/analysis/penguins-analysis.html)
+The full report is available [here](https://ubc-mds-2026-27.github.io/DSCI-522-Group-36-Palmer-Penguins/).
 
 ## How to Run the Analysis
 
